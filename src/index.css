@@ -136,7 +136,6 @@ header h1 {
 }
 
 #answers {
-  list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
@@ -146,8 +145,9 @@ header h1 {
 }
 
 .answer {
+  list-style: none;
   width: 90%;
-  margin: 0 auto;
+  margin: 10px auto;
 }
 
 .answer button {
