@@ -1,7 +1,7 @@
-import React, { useCallback, useState } from "react";
-import quizComplete from "../assets/quiz-complete.png";
+import React, { useCallback, useState, useRef } from "react";
 import QUESTIONS from "../questions";
 import QuestionTimer from "./QuestionTimer";
+import Summary from "./Summary";
 import Answers from "./Answers";
 
 const Quiz = () => {
@@ -11,10 +11,12 @@ const Quiz = () => {
   const activeQuestionIndex =
     answerState === "" ? userAnswers.length : userAnswers.length - 1;
   const quizIsComplete = activeQuestionIndex === QUESTIONS.length;
+  const stoppedRef = useRef(false);
 
   const handleSelectAnswer = useCallback(
     function handleSelectAnswer(selectedAnswer) {
       setAnswerState("answered");
+      stoppedRef.current = true;
       setUserAnswers((prevState) => {
         return [...prevState, selectedAnswer];
       });
@@ -28,6 +30,7 @@ const Quiz = () => {
 
         setTimeout(() => {
           setAnswerState("");
+          stoppedRef.current = false;
         }, 2000);
       }, 1000);
     },
@@ -40,10 +43,7 @@ const Quiz = () => {
 
   if (quizIsComplete) {
     return (
-      <div id="summary">
-        <img src={quizComplete} alt="Trophy Icon" />
-        <h2>Quiz Completed</h2>
-      </div>
+      <Summary userAnswers={userAnswers} />
     );
   }
 
@@ -53,6 +53,7 @@ const Quiz = () => {
         <QuestionTimer
           timeOut={25000}
           onTimeOut={handleSkipQuestion}
+          stopped={stoppedRef.current}
           key={QUESTIONS[activeQuestionIndex].text}
         />
         <h2>{QUESTIONS[activeQuestionIndex].text}</h2>
